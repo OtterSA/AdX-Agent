@@ -33,7 +33,7 @@ class MyNDaysNCampaignsAgent(NDaysNCampaignsAgent):
 
         self.pretrained_priors = self._load_pretrained_priors()
 
-        self.num_monte_carlo_samples = 3
+        self.num_monte_carlo_samples = 7  
 
     def on_new_game(self) -> None:
         self.opponent_bid_shading = {}
@@ -324,8 +324,11 @@ class MyNDaysNCampaignsAgent(NDaysNCampaignsAgent):
 
         campaign_scores.sort(key=lambda x: x[1], reverse=True)
 
-        max_bids = min(4, max(1, 5 - active_count))
 
+        if current_day <= 3:
+            max_bids = min(3, max(1, 4 - active_count))
+        else:
+            max_bids = min(5, max(1, 6 - active_count))
         for campaign, score in campaign_scores[:max_bids]:
             if score > 0:
                 strategic_bid = self._compute_campaign_best_response(campaign, quality_score)
@@ -361,16 +364,19 @@ class MyNDaysNCampaignsAgent(NDaysNCampaignsAgent):
 
         duration = campaign.end_day - campaign.start_day + 1
         if duration == 1:
-            score += 2.0
+            score += 2.5 
         elif duration == 2:
-            score += 1.0
-
+            score += 1.5
+        elif duration >= 4:
+            score -= 1.0 
 
         days_until_start = campaign.start_day - current_day
         if days_until_start <= 1:
-            score += 1.5
+            score += 2.0 
         elif days_until_start <= 2:
-            score += 0.5
+            score += 0.8
+        elif days_until_start >= 5:
+            score -= 1.5 
 
         segment_str = '_'.join(sorted(campaign.target_segment))
         if segment_str in self.user_frequencies:

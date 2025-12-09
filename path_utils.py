@@ -18,7 +18,7 @@ def find_local_root(marker_file='.local_root') -> Path:
     for parent in current_path.parents:
         if (parent / marker_file).exists():
             return parent
-    raise FileNotFoundError(f'Project root not found.')
+    raise FileNotFoundError('Project root not found.')
 
 def path_from_local_root(path = ''): 
     project_root = find_local_root()
